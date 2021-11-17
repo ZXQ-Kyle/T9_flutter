@@ -4,6 +4,8 @@ import 'package:hive/hive.dart';
 
 part 'app_bean.g.dart';
 
+//flutter packages pub run build_runner build --delete-conflicting-outputs
+
 @HiveType(typeId: 0)
 class AppBean extends HiveObject {
   @HiveField(0)

@@ -27,6 +27,7 @@ class MyApp extends StatelessWidget {
       title: '波妞帮你搜应用',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        splashColor: Colors.blue,
       ),
       home: HomeRoute(),
     );

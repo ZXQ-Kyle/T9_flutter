@@ -18,7 +18,7 @@ const wordMap = {
 
 class HomeLogic extends GetxController {
   var text = ''.obs;
-  List<AppBean> _totalApps = [];
+  List<AppBean> totalApps = [];
   List<AppBean> list = [];
 
   @override
@@ -32,8 +32,8 @@ class HomeLogic extends GetxController {
         includeSystemApps: true,
         includeAppIcons: true,
       );
-      List<ApplicationWithIcon> apps =
-          res.map<ApplicationWithIcon>((e) => e as ApplicationWithIcon).toList();
+      List<ApplicationWithIcon> apps = res.cast<ApplicationWithIcon>();
+
       Map<String, AppBean> map = {};
       for (var e in apps) {
         map[e.packageName] = AppBean(
@@ -55,10 +55,10 @@ class HomeLogic extends GetxController {
   }
 
   void _initListData() {
-    _totalApps = Hive.box<AppBean>(hiveBoxApp).values.toList(growable: false);
+    totalApps = Hive.box<AppBean>(hiveBoxApp).values.toList(growable: false);
     //默认排序，按最近打开顺序排序
-    _totalApps.sort((AppBean a, AppBean b) => b.lastUsed.compareTo(a.lastUsed));
-    list = _totalApps;
+    totalApps.sort((AppBean a, AppBean b) => b.lastUsed.compareTo(a.lastUsed));
+    list = totalApps;
     update();
   }
 
@@ -77,7 +77,7 @@ class HomeLogic extends GetxController {
     var regExp = RegExp(join);
 
     if (reverse) {
-      list = _totalApps;
+      list = totalApps;
     }
     list = list.where((element) {
       return (element.shortPinyin.length >= text.value.length) &&
@@ -95,7 +95,7 @@ class HomeLogic extends GetxController {
   }
 
   void reset() {
-    list = _totalApps;
+    list = totalApps;
     update();
   }
 
@@ -103,8 +103,8 @@ class HomeLogic extends GetxController {
   void openApp(AppBean bean) {
     bean.lastUsed = DateTime.now();
     bean.openCount = bean.openCount + 1;
-    Hive.box<AppBean>(hiveBoxApp).put(bean.packageName, bean);
-    _totalApps.sort((AppBean a, AppBean b) => b.lastUsed.compareTo(a.lastUsed));
+    bean.save();
+    totalApps.sort((AppBean a, AppBean b) => b.lastUsed.compareTo(a.lastUsed));
   }
 
   ///更新应用数据
@@ -142,7 +142,7 @@ class HomeLogic extends GetxController {
             _generalPy(e.appName),
           );
     }
-
+    box.deleteAll(box.keys);
     box.putAll(map);
     _initListData();
   }

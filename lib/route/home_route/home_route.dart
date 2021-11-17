@@ -12,18 +12,23 @@ class HomeRoute extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(title: const Text('波妞帮你搜应用')),
+      appBar: AppBar(
+        title: const Text(
+          '波妞帮你搜应用',
+          style: TextStyle(fontSize: 18),
+        ),
+      ),
       body: Column(
         children: [
           Expanded(
             child: GetBuilder<HomeLogic>(builder: (ctx) {
-              if (logic.list.isEmpty) {
+              if (logic.list.isEmpty && logic.totalApps.isEmpty) {
                 return const Text('刷新应用数据...');
               }
               return GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
-                  childAspectRatio: 1.5,
+                  childAspectRatio: 1.4,
                 ),
                 itemBuilder: (ctx, index) {
                   var bean = logic.list.elementAt(index);
@@ -33,21 +38,31 @@ class HomeRoute extends StatelessWidget {
                       logic.openApp(bean);
                       app?.openApp();
                     },
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 4),
-                          child: Image.memory(
-                            bean.icon,
-                            height: 40,
-                            width: 40,
+                    onLongPress: () async {
+                      var app = await DeviceApps.getApp(bean.packageName);
+                      app?.openSettingsScreen();
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 2),
+                            child: Image.memory(
+                              bean.icon,
+                              height: 40,
+                              width: 40,
+                            ),
                           ),
-                        ),
-                        Text(bean.name),
-                      ],
+                          Text(
+                            bean.name,
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },
@@ -57,8 +72,8 @@ class HomeRoute extends StatelessWidget {
             }),
           ),
           Container(
-            color: Colors.black.withOpacity(0.2),
-            height: 48,
+            color: Colors.black.withOpacity(0.1),
+            height: 40,
             width: double.infinity,
             alignment: Alignment.center,
             child: Obx(() => Text(
@@ -69,13 +84,15 @@ class HomeRoute extends StatelessWidget {
                 )),
           ),
           Container(
-            color: Colors.black.withOpacity(0.2),
-            height: 260,
+            color: Colors.black.withOpacity(0.1),
+            height: 238,
+            width: double.infinity,
+            padding: const EdgeInsets.only(bottom: 8),
             child: GridView.builder(
               itemCount: 12,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
-                childAspectRatio: width / 3 / (260 / 4),
+                childAspectRatio: width / 3 / (230 / 4),
               ),
               itemBuilder: (ctx, index) {
                 return _generalPad(index);
@@ -99,7 +116,6 @@ class HomeRoute extends StatelessWidget {
 
     switch (index) {
       case 0:
-        return wi('1');
       case 1:
       case 2:
       case 3:
@@ -108,7 +124,7 @@ class HomeRoute extends StatelessWidget {
       case 6:
       case 7:
       case 8:
-        return wi('$index ${wordMap['${index + 1}']}', onTap: () {
+        return wi('$index ${wordMap['${index + 1}'] ?? ''}', onTap: () {
           logic.text.value = '${logic.text.value}${index + 1}';
           logic.filter();
         });
