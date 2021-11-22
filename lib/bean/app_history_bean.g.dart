@@ -1,50 +1,35 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'app_bean.dart';
+part of 'app_history_bean.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class AppBeanAdapter extends TypeAdapter<AppBean> {
+class AppHistoryBeanAdapter extends TypeAdapter<AppHistoryBean> {
   @override
-  final int typeId = 0;
+  final int typeId = 1;
 
   @override
-  AppBean read(BinaryReader reader) {
+  AppHistoryBean read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return AppBean(
+    return AppHistoryBean(
       fields[0] as String,
-      fields[1] as String,
-      fields[2] as Uint8List,
-      fields[3] as int,
-      fields[4] as DateTime,
-      fields[5] as String,
-      shield: fields[6] as bool?,
+      fields[1] as DateTime,
     );
   }
 
   @override
-  void write(BinaryWriter writer, AppBean obj) {
+  void write(BinaryWriter writer, AppHistoryBean obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(2)
       ..writeByte(0)
       ..write(obj.packageName)
       ..writeByte(1)
-      ..write(obj.name)
-      ..writeByte(2)
-      ..write(obj.icon)
-      ..writeByte(3)
-      ..write(obj.openCount)
-      ..writeByte(4)
-      ..write(obj.lastUsed)
-      ..writeByte(5)
-      ..write(obj.shortPinyin)
-      ..writeByte(6)
-      ..write(obj.shield);
+      ..write(obj.time);
   }
 
   @override
@@ -53,7 +38,7 @@ class AppBeanAdapter extends TypeAdapter<AppBean> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is AppBeanAdapter &&
+      other is AppHistoryBeanAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

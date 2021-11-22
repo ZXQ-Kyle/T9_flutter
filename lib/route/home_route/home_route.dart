@@ -107,6 +107,8 @@ class HomeRoute extends StatelessWidget {
   Widget _generalPad(int index) {
     Widget wi(String str, {GestureTapCallback? onTap}) {
       return InkWell(
+        borderRadius: BorderRadius.circular(50),
+        customBorder: const CircleBorder(),
         onTap: onTap,
         child: Center(
           child: Text(str),
@@ -124,9 +126,9 @@ class HomeRoute extends StatelessWidget {
       case 6:
       case 7:
       case 8:
-        return wi('$index ${wordMap['${index + 1}'] ?? ''}', onTap: () {
+        return wi('${index + 1} ${wordMap['${index + 1}'] ?? ''}', onTap: () {
           logic.text.value = '${logic.text.value}${index + 1}';
-          logic.filter();
+          logic.filter(index: index);
         });
       case 9:
         return wi('x', onTap: () {

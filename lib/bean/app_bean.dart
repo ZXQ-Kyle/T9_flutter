@@ -26,14 +26,19 @@ class AppBean extends HiveObject {
   @HiveField(5)
   final String shortPinyin;
 
+  //是否屏蔽
+  @HiveField(6)
+  bool? shield;
+
   AppBean(
     this.packageName,
     this.name,
     this.icon,
     this.openCount,
     this.lastUsed,
-    this.shortPinyin,
-  );
+    this.shortPinyin, {
+    this.shield = false,
+  });
 
   @override
   String toString() {

@@ -16,6 +16,7 @@ dependencies:
   lpinyin: ^2.0.3
   device_apps: ^2.1.1
   get: ^4.3.8
+  logger: ^1.1.0
 
   #数据库
   hive: ^2.0.4
