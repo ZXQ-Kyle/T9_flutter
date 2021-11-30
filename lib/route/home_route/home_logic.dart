@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:device_apps/device_apps.dart';
 import 'package:get/get.dart';
@@ -105,33 +106,62 @@ class HomeLogic extends GetxController {
   }
 
   String _generalPy(String name) {
-    return PinyinHelper.getShortPinyin(name).replaceAll(RegExp(r'\.|_| '), '').toUpperCase();
+    return PinyinHelper.getShortPinyin(name)
+        .replaceAll(RegExp(r'\.|_| '), '')
+        .toUpperCase();
   }
 
   ///搜索核心逻辑
+  ///[reverse] 删除输入
+  ///[index] 点击的键盘位置
   void filter({int index = 0, bool reverse = false}) {
     if (text.value.isEmpty) {
       reset();
       return;
     }
 
-    var join = text.value.split('').map((e) => '[${index + 1}${wordMap[e] ?? ''}]').join('.?');
-    var regExp = RegExp(join);
+    //模糊判断
+    var vagueStr = text.value
+        .split('')
+        .map((e) => '[${index + 1}${wordMap[e] ?? ''}]')
+        .join('.?');
+    var vagueRegExp = RegExp(vagueStr);
 
     if (reverse) {
       list = totalApps;
     }
-    list = list.where((element) {
+    var vagueList = list.where((element) {
       return (element.shortPinyin.length >= text.value.length) &&
-          element.shortPinyin.contains(regExp);
+          element.shortPinyin.contains(vagueRegExp);
     }).toList(growable: false);
-    list.sort((a, b) {
+    vagueList.sort((a, b) {
       var compareTo = b.openCount.compareTo(a.openCount);
       if (compareTo == 0) {
         return b.lastUsed.compareTo(a.lastUsed);
       }
       return compareTo;
     });
+
+    //精确判断，按顺序强制匹配第一位至最后一位
+    var startStr = text.value
+        .split('')
+        .map((e) => '[${index + 1}${wordMap[e] ?? ''}]')
+        .join('');
+    var startRegExp = RegExp(startStr);
+
+    var startList = list.where((element) {
+      return (element.shortPinyin.length >= text.value.length) &&
+          element.shortPinyin.startsWith(startRegExp);
+    }).toList();
+    startList.sort((a, b) {
+      var compareTo = b.openCount.compareTo(a.openCount);
+      if (compareTo == 0) {
+        return b.lastUsed.compareTo(a.lastUsed);
+      }
+      return compareTo;
+    });
+    startList.addAll(vagueList);
+    list = LinkedHashSet<AppBean>.from(startList).toList();
 
     update();
   }
@@ -165,8 +195,10 @@ class HomeLogic extends GetxController {
       //判断是否有应用变动
       List<String> keys = box.keys.map((e) => '$e').toList(growable: false);
       keys.sort((a, b) => a.compareTo(b));
-      var list =
-          res.where((element) => element.enabled).map((e) => e.packageName).toList(growable: false);
+      var list = res
+          .where((element) => element.enabled)
+          .map((e) => e.packageName)
+          .toList(growable: false);
       list.sort((a, b) => a.compareTo(b));
       if (keys.join(',') == list.join(',')) {
         return;

@@ -33,6 +33,7 @@ class HomeRoute extends StatelessWidget {
                 itemBuilder: (ctx, index) {
                   var bean = logic.list.elementAt(index);
                   return InkWell(
+                    customBorder: const CircleBorder(),
                     onTap: () async {
                       var app = await DeviceApps.getApp(bean.packageName);
                       logic.openApp(bean);
