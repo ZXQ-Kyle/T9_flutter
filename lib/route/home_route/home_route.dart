@@ -1,5 +1,6 @@
 import 'package:device_apps/device_apps.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'home_logic.dart';
 
@@ -11,8 +12,14 @@ class HomeRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        systemNavigationBarColor: Colors.black.withOpacity(0.1),
+      ),
+    );
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).primaryColor.withOpacity(0.45),
         title: const Text(
           '波妞帮你搜应用',
           style: TextStyle(fontSize: 18),

@@ -124,7 +124,7 @@ class HomeLogic extends GetxController {
     var vagueStr = text.value
         .split('')
         .map((e) => '[${index + 1}${wordMap[e] ?? ''}]')
-        .join('.?');
+        .join('.*');
     var vagueRegExp = RegExp(vagueStr);
 
     if (reverse) {
